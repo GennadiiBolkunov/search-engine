@@ -1,14 +1,14 @@
-#include "inverted_index.h"
-#include "converter_json.h"
-#include "gtest/gtest.h"
-#include "search_server.h"
+#include <QApplication>
+#include <file_browser.h>
+#include "search_gui.h"
 
-int main() {
-    ConverterJSON conv;
-    InvertedIndex myInd;
-    myInd.UpdateDocumentBase(conv.GetTextDocuments());
-    SearchServer myServ(myInd);
-    conv.putAnswers(myServ.search(conv.GetRequests()));
-    RUN_ALL_TESTS();
-    return 0;
+int main(int argc, char *argv[]) {
+    QApplication a(argc, argv);
+
+    auto window = new SearchGUI;
+
+
+    window->resize(600,600);
+    window->show();
+    return QApplication::exec();
 }

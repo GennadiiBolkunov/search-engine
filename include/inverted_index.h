@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <map>
+#include <string>
 
 struct Entry{
     size_t doc_id, count;
