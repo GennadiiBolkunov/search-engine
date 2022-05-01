@@ -19,7 +19,7 @@ private:
     QPushButton *searchButton;
     QLineEdit *lineEdit;
     QSpinBox *spinBox;
-    FileEditBrowser *fileEditBrowser;
+    FileBrowser fileBrowser;
 
     ConverterJSON converterJson;
 public:

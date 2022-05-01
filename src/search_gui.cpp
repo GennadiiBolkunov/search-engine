@@ -1,18 +1,17 @@
 #include "search_gui.h"
 
 SearchGUI::SearchGUI(QWidget *parent)
-    : QWidget(parent), converterJson()
+    : QWidget(parent), converterJson(), fileBrowser("../../files")
     {
     layout = new QGridLayout (this);
     searchButton = new QPushButton("search");
     spinBox = new QSpinBox();
     lineEdit = new QLineEdit();
-    fileEditBrowser = new FileEditBrowser("../../files");
 
     layout->addWidget(spinBox, 0,0);
     layout->addWidget(lineEdit, 0,1);
     layout->addWidget(searchButton, 0, 2);
-    layout->addWidget(fileEditBrowser, 1,0,1,3);
+    layout->addWidget(&fileBrowser, 1,0,1,3);
 
     connect(spinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int value){
         converterJson.setMaxResponses(value);
@@ -27,23 +26,17 @@ SearchGUI::SearchGUI(QWidget *parent)
         SearchServer searchServer(invertedIndex);
         auto result = searchServer.search(requests);
         converterJson.putAnswers(result);
-        fileEditBrowser->clearList();
-        fileEditBrowser->editListInfo("Search result:");
+
+        fileBrowser.clearList();
+        fileBrowser.editListInfo("Search result:");
         for (auto &request: result){
             if (request.empty())
-                fileEditBrowser->editListInfo("No result :(");
+                fileBrowser.editListInfo("No result :(");
             for (auto &document :request){
-                fileEditBrowser->addItem(QString(converterJson.getFileName(document.doc_id).c_str()));
+                fileBrowser.addItem(QString(converterJson.getFileName(document.doc_id).c_str()));
             }
         }
-    });
 
-    connect(fileEditBrowser, &FileEditBrowser::fileCreated, [this](QString fileName){
-        converterJson.addFile(fileName.toStdString());
-    });
-
-    connect(fileEditBrowser, &FileEditBrowser::fileDeleted, [this](QString fileName){
-        converterJson.deleteFile(fileName.toStdString());
     });
 }
 

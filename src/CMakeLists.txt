@@ -5,7 +5,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-add_executable(search_engine main.cpp ../include/converter_json.h converter_json.cpp ../include/inverted_index.h inverted_index.cpp ../include/counting_dictionary.h ../include/search_server.h ../include/request_word_set.h search_server.cpp ../include/relative_index.h file_browser.cpp ../include/file_browser.h ../include/search_gui.h search_gui.cpp)
+add_executable(search_engine main.cpp ../include/converter_json.h converter_json.cpp ../include/inverted_index.h inverted_index.cpp ../include/counting_dictionary.h ../include/search_server.h ../include/request_word_set.h search_server.cpp ../include/relative_index.h file_browser.cpp file_browser.ui ../include/file_browser.h ../include/search_gui.h search_gui.cpp)
 target_include_directories(search_engine PUBLIC ${INCLUDE_DIR})
 
 set(CMAKE_PREFIX_PATH "E:/Qt/5.15.2/mingw81_64/lib/cmake")
