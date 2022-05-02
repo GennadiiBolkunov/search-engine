@@ -2,7 +2,7 @@
 #include "converter_json.h"
 #include "algorithm"
 
-std::vector<std::string> ConverterJSON::GetTextDocuments() {
+std::vector<std::string> ConverterJSON::GetTextDocuments(const QDir &currentDir) {
     std::ifstream configFile ("../../json_files/config.json");
     std::vector<std::string> result;
     if (configFile.is_open()){
@@ -11,7 +11,7 @@ std::vector<std::string> ConverterJSON::GetTextDocuments() {
         result.reserve(config.size());
         for(auto &fileName : config["files"])
         {
-            std::ifstream fileToRead("../../files/"+static_cast<std::string>(fileName));
+            std::ifstream fileToRead(currentDir.absolutePath().toStdString()+"/"+static_cast<std::string>(fileName));
             std::string text;
             while (fileToRead.is_open() && !fileToRead.eof()){
                 std::string line;
@@ -93,26 +93,18 @@ std::string ConverterJSON::getFileName(size_t doc_id) {
     return "";
 }
 
-void ConverterJSON::addFile(const std::string &fileName) {
+void ConverterJSON::updateFiles(const QDir &currentDir) {
     std::ifstream fromConfigFile ("../../json_files/config.json");
     if (fromConfigFile.is_open()){
         nlohmann::json config;
         fromConfigFile>>config;
-        config["files"].push_back(fileName);
-        fromConfigFile.close();
-        std::ofstream toConfigFile ("../../json_files/config.json");
-        if (toConfigFile.is_open()){
-            toConfigFile<<config;
-        }
-    }
-}
+        config["files"].clear();
+        auto dirList =currentDir.entryInfoList();
 
-void ConverterJSON::deleteFile(const std::string &fileName) {
-    std::ifstream fromConfigFile ("../../json_files/config.json");
-    if (fromConfigFile.is_open()){
-        nlohmann::json config;
-        fromConfigFile>>config;
-        config["files"].erase(std::find(config["files"].begin(), config["files"].end(), fileName));
+        for(auto &el: dirList){
+            if (!el.fileName().isEmpty() && el.isFile())
+                config["files"].push_back(el.fileName().toStdString());
+        }
         fromConfigFile.close();
         std::ofstream toConfigFile ("../../json_files/config.json");
         if (toConfigFile.is_open()){

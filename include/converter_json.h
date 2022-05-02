@@ -3,11 +3,12 @@
 
 #include "nlohmann/json.hpp"
 #include "relative_index.h"
+#include <QDir>
 
 class ConverterJSON{
 public:
     ConverterJSON() = default;
-    std::vector<std::string> GetTextDocuments();
+    std::vector<std::string> GetTextDocuments(const QDir &currentDir);
 
     int GetResponsesLimit();
 
@@ -19,9 +20,7 @@ public:
 
     std::string getFileName(size_t doc_id);
 
-    void addFile(const std::string &fileName);
-
-    void deleteFile(const std::string &fileName);
+    void updateFiles(const QDir &currentDir);
 
     void setMaxResponses(int amount);
 };

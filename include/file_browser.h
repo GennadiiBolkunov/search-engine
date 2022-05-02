@@ -23,6 +23,7 @@ public:
     void addItem(const QString &itemName);
     void clearList();
     void editListInfo(QString text);
+    const QDir &getCurrentDir();
 
 public slots:
 

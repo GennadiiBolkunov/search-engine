@@ -1,25 +1,23 @@
 #include "search_gui.h"
 
+
 SearchGUI::SearchGUI(QWidget *parent)
     : QWidget(parent), converterJson(), fileBrowser("../../files")
     {
     layout = new QGridLayout (this);
-    searchButton = new QPushButton("search");
-    spinBox = new QSpinBox();
-    lineEdit = new QLineEdit();
+    searchLine = new SearchLine;
 
-    layout->addWidget(spinBox, 0,0);
-    layout->addWidget(lineEdit, 0,1);
-    layout->addWidget(searchButton, 0, 2);
-    layout->addWidget(&fileBrowser, 1,0,1,3);
+    layout->addWidget(searchLine, 0,0);
+    layout->addWidget(&fileBrowser, 1,0);
 
-    connect(spinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), [this](int value){
+    connect(searchLine, &SearchLine::responsesNumChanged, [this](int value){
         converterJson.setMaxResponses(value);
     });
 
-    connect(searchButton, &QPushButton::clicked, [this](){
-        converterJson.setRequest(lineEdit->text().toStdString());
-        auto docs = converterJson.GetTextDocuments();
+    connect(searchLine, &SearchLine::searchStarted, [this](const QString &request_text){
+        converterJson.updateFiles(fileBrowser.getCurrentDir());
+        converterJson.setRequest(request_text.toStdString());
+        auto docs = converterJson.GetTextDocuments(fileBrowser.getCurrentDir());
         auto requests = converterJson.GetRequests();
         InvertedIndex invertedIndex;
         invertedIndex.UpdateDocumentBase(docs);

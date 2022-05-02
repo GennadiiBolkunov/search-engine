@@ -2,9 +2,7 @@
 #include "./ui_file_browser.h"
 #include <QTextStream>
 #include <QFile>
-
-//изменение директория
-
+#include <QFileDialog>
 
 FileBrowser::FileBrowser(const QString &dir_name, QWidget *parent)
     : QWidget(parent), ui(new Ui::FileBrowser), dir(dir_name)
@@ -26,7 +24,10 @@ FileBrowser::FileBrowser(const QString &dir_name, QWidget *parent)
     }
 
     connect(ui->browseButton, &QPushButton::clicked, [this](){
-        
+        auto dirPath = QFileDialog::getExistingDirectory();
+        dir.cd(dirPath);
+        ui->lineEdit->setText(dirPath);
+        this->resetFileList();
     });
 
     connect(ui->listWidget, &QListWidget::itemClicked, [this](){
@@ -51,6 +52,8 @@ FileBrowser::FileBrowser(const QString &dir_name, QWidget *parent)
         textFromFile.reset();
         displayText.clear();
     });
+
+    connect(ui->dropButton, &QPushButton::clicked, this, &FileBrowser::resetFileList);
 }
 
 void FileBrowser::addItem(const QString &itemName) {
@@ -66,6 +69,7 @@ void FileBrowser::clearList() {
 }
 
 void FileBrowser::resetFileList() {
+    ui->textBrowser->clear();
     ui->fileListInfo->setText("\""+dir.dirName()+"\" directory files:");
     ui->listWidget->clear();
     auto dirList =dir.entryInfoList();
@@ -80,6 +84,10 @@ void FileBrowser::resetFileList() {
 
 void FileBrowser::editListInfo(QString text) {
     ui->fileListInfo->setText(text);
+}
+
+const QDir& FileBrowser::getCurrentDir() {
+    return dir;
 }
 
 FileBrowser::~FileBrowser()

@@ -10,15 +10,14 @@
 #include "converter_json.h"
 #include "search_server.h"
 #include <QSpinBox>
+#include "search_line.h"
 
 class SearchGUI : public QWidget{
     Q_OBJECT
 
 private:
     QGridLayout *layout;
-    QPushButton *searchButton;
-    QLineEdit *lineEdit;
-    QSpinBox *spinBox;
+    SearchLine *searchLine;
     FileBrowser fileBrowser;
 
     ConverterJSON converterJson;
